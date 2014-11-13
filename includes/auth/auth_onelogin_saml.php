@@ -304,9 +304,7 @@ function acp_onelogin_saml(&$new)
 
     $tpl = '<hr>';
 
-    if (!init_onelogin_saml()) {
-        $tpl .=  '<p style="float:right"><a href="'.generate_board_url().'/includes/onelogin/metadata.php">'.$user->lang['ONELOGIN_SAML_METADATA_LINK'].'</a></p>';
-    }
+    $tpl .=  '<p style="float:right"><a target="_blank" href="'.generate_board_url().'/includes/onelogin/metadata.php">'.$user->lang['ONELOGIN_SAML_METADATA_LINK'].'</a></p>';
 
     $tpl .= '<h3 style="margin-top: 0px;padding-bottom:5px;">'.$user->lang['ONELOGIN_SAML_SETTINGS_TITLE'].'</h3>'
         .'<b>'.$user->lang['ONELOGIN_SAML_IDP_SECTION_TITLE'].'</b>'
@@ -570,15 +568,30 @@ function onelogin_saml_get_groups($attrs)
             } else if (in_array($user_saml_group, $registered_coppa_users_mapping)) {
                 $groups_ids[] = $db_groups['REGISTERED_COPPA'];
             } else if (in_array($user_saml_group, $custom1_mapping) && array_key_exists($custom1_name, $db_groups)) {
-                $groups_ids[] = $custom1_name;
+                $group_id = onelogin_saml_get_db_group_by_name($custom1_name);
+                if ($group_id) {
+                    $groups_ids[] = $group_id;
+                }
             } else if (in_array($user_saml_group, $custom2_mapping) && array_key_exists($custom2_name, $db_groups)) {
-                $groups_ids[] = $custom2_name;
+                $group_id = onelogin_saml_get_db_group_by_name($custom2_name);
+                if ($group_id) {
+                    $groups_ids[] = $group_id;
+                }
             } else if (in_array($user_saml_group, $custom3_mapping) && array_key_exists($custom3_name, $db_groups)) {
-                $groups_ids[] = $custom3_name;
+                $group_id = onelogin_saml_get_db_group_by_name($custom3_name);
+                if ($group_id) {
+                    $groups_ids[] = $group_id;
+                }
             } else if (in_array($user_saml_group, $custom4_mapping) && array_key_exists($custom4_name, $db_groups)) {
-                $groups_ids[] = $custom4_name;
+                $group_id = onelogin_saml_get_db_group_by_name($custom4_name);
+                if ($group_id) {
+                    $groups_ids[] = $group_id;
+                }
             } else if (in_array($user_saml_group, $custom5_mapping) && array_key_exists($custom5_name, $db_groups)) {
-                $groups_ids[] = $custom5_name;
+                $group_id = onelogin_saml_get_db_group_by_name($custom5_name);
+                if ($group_id) {
+                    $groups_ids[] = $group_id;
+                }
             }
         }
     }
@@ -639,6 +652,22 @@ function onelogin_saml_get_user_groups($user_id)
     $db->sql_freeresult($result);
 
     return $groups;
+}
+
+function onelogin_saml_get_db_group_by_name($group_name) {
+    global $db;
+
+    $sql = 'SELECT group_id
+            FROM ' . GROUPS_TABLE . "
+            WHERE group_name = '".$group_name."'";
+    $result = $db->sql_query($sql);
+    $row = $db->sql_fetchrow($result);
+    $db->sql_freeresult($result);
+    if (!empty($row)) {
+        return $row['group_id'];
+    } else {
+        return false;
+    }
 }
 
 function onelogin_saml_update_mail($user_id, $email)
