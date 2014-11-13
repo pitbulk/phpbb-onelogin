@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+    <header>
+        <meta name="generator" content="MODX file generated with PP MODX"/>
+        <license><![CDATA[http://opensource.org/licenses/MIT MIT Licence]]></license>
+        <title lang="en"><![CDATA[SAML Authentication Plugin]]></title>
+        <title lang="fr"><![CDATA[Plugin d'Authentification SAML]]></title>
+        <description lang="en"><![CDATA[Enables your board to act as a SAML service provider using the OneLogin's SAML Toolkit]]></description>
+        <description lang="es"><![CDATA[Habilita tu foro para actuar como un proveedor de servicio SAML utilizando el Toolkit SAML de OneLogin]]></description>
+        <author-group>
+            <author>
+                <realname><![CDATA[Onelogin Inc]]></realname>
+                <homepage><![CDATA[https://github.com/pitbulk/onelogin-phpbb]]></homepage>
+                <email><![CDATA[support@onelogin.com]]></email>
+            </author>
+        </author-group>
+        <mod-version>1.0.0</mod-version>
+        <installation>
+            <level>easy</level>
+            <time>900</time>
+            <target-version>3.0.12</target-version>
+        </installation>
+        <history>
+            <entry>
+                <date>2014-10-28</date>
+                <rev-version>1.0.0</rev-version>
+                <changelog lang="en">
+                    <change><![CDATA[Initial release]]></change>
+                </changelog>
+                <changelog lang="es">
+                    <change><![CDATA[Entrega inicial]]></change>
+                </changelog>
+            </entry>
+        </history>
+    </header>
+    <action-group>
+        <copy>
+            <file from="includes/auth/auth_onelogin_saml.php" to="includes/auth/auth_onelogin_saml.php"/>
+            <file from="includes/onelogin/_toolkit_loader.php" to="includes/onelogin/_toolkit_loader.php"/>
+            <file from="includes/onelogin/settings.php" to="includes/onelogin/settings.php"/>
+            <file from="includes/onelogin/extlib" to="includes/onelogin/extlib"/>
+            <file from="includes/onelogin/saml2" to="includes/onelogin/saml2"/>
+            <file from="language/end/mods/info_acp_onelogin_saml.php" to="language/end/mods/info_acp_onelogin_saml.php"/>
+        </copy>
+        <diy-instructions lang="en"><![CDATA[Setup a SAML SP using OneLogin's SAML Toolkit]]></diy-instructions>
+        <diy-instructions lang="es"><![CDATA[Configura un SP SAML usando el toolkit SAML de OneLogin]]></diy-instructions>
+    </action-group>
+</mod>
