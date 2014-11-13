@@ -19,6 +19,11 @@ Pre-requisite
 Take a look on the php saml toolkit dependences:
 https://github.com/onelogin/php-saml#dependences
 
+Also you will need to make a minor modification on the phpbb database:
+```
+ALTER TABLE phpbb_config MODIFY config_value varchar(1200);
+```
+
 Installation
 ------------
 
@@ -53,9 +58,12 @@ In Case of Emergency
 If you happened to be locked out of your board, don't panic.
 
 Change the authentication method in the DB table `phpbb3_config` back to db.
-
+```
 UPDATE phpbb_config SET config_value = 'db' WHERE config_name = 'auth_method';
+```
 
 Clear phpbb sessions and caches and you should get access to your board again.
+```
 cd cache
 rm *
+```
