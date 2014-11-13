@@ -2,15 +2,16 @@ phpbb-onelogin
 ==============
 
 phpBB SAML Authentication plugin based on OneLogin PHP SAML Toolkit.
+
 This plugin enables your board users to log in through SAML.
 
 Features
 --------
 
-Single sign on
-Single log out
-Just on time provisioning
-Supports groups
+* Single sign on
+* Single log out
+* Just on time provisioning
+* Supports groups
 
 Pre-requisite
 -------------
@@ -27,7 +28,23 @@ Copy the 'includes' and the 'language' folder at the base folder of phpbb.
 Settings
 --------
 
+In the admin interface, at the 'General' tab, in the 'Client communication' section access to 'Authentication'.
 
+First, you need to change the authentication method to 'Onelogin_saml' in order to enable the SAML authentication.
+
+Then go to the 'Onelogin SAML Settings' and configure your SP (the parameters are documented).
+
+
+Local Login
+-----------
+
+When SAML enabled, you can always continue login through the 'alternative auth method' normally 'db' or 'ldap'
+by adding to the login url the parameter &normal
+
+For example, access:
+http://example.com/phpbb/ucp.php?mode=login&sid=737ce11eb651394709cdc8735bc3abfa&normal
+instead of
+http://example.com/phpbb/ucp.php?mode=login&sid=737ce11eb651394709cdc8735bc3abfa
 
 
 In Case of Emergency
