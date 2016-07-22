@@ -17,7 +17,7 @@ class OneLogin_Saml2_LogoutResponse
      * The decoded, unprocessed XML response provided to the constructor.
      * @var string
      */
-    private $_logoutResponse;
+    protected $_logoutResponse;
 
     /**
      * A DOMDocument class loaded from the SAML LogoutResponse.
@@ -87,12 +87,14 @@ class OneLogin_Saml2_LogoutResponse
     /**
      * Determines if the SAML LogoutResponse is valid
      *
-     * @param string $requestId The ID of the LogoutRequest sent by this SP to the IdP
+     * @param string|null $requestId The ID of the LogoutRequest sent by this SP to the IdP
+     * @param bool $retrieveParametersFromServer
+     *
+     * @return bool Returns if the SAML LogoutResponse is or not valid
      *
      * @throws Exception
-     * @return bool Returns if the SAML LogoutResponse is or not valid
      */
-    public function isValid($requestId = null)
+    public function isValid($requestId = null, $retrieveParametersFromServer=false)
     {
         $this->_error = null;
         try {
@@ -101,13 +103,14 @@ class OneLogin_Saml2_LogoutResponse
             $idPEntityId = $idpData['entityId'];
 
             if ($this->_settings->isStrict()) {
-
-                $res = OneLogin_Saml2_Utils::validateXML($this->document, 'saml-schema-protocol-2.0.xsd', $this->_settings->isDebugActive());
-                if (!$res instanceof DOMDocument) {
-                    throw new Exception("Invalid SAML Logout Response. Not match the saml-schema-protocol-2.0.xsd");
-                }
-
                 $security = $this->_settings->getSecurityData();
+
+                if ($security['wantXMLValidation']) {
+                    $res = OneLogin_Saml2_Utils::validateXML($this->document, 'saml-schema-protocol-2.0.xsd', $this->_settings->isDebugActive());
+                    if (!$res instanceof DOMDocument) {
+                        throw new Exception("Invalid SAML Logout Response. Not match the saml-schema-protocol-2.0.xsd");
+                    }
+                }
 
                 // Check if the InResponseTo of the Logout Response matchs the ID of the Logout Request (requestId) if provided
                 if (isset($requestId) && $this->document->documentElement->hasAttribute('InResponseTo')) {
@@ -149,11 +152,19 @@ class OneLogin_Saml2_LogoutResponse
                     $signAlg = $_GET['SigAlg'];
                 }
 
-                $signedQuery = 'SAMLResponse='.urlencode($_GET['SAMLResponse']);
-                if (isset($_GET['RelayState'])) {
-                    $signedQuery .= '&RelayState='.urlencode($_GET['RelayState']);
+                if ($retrieveParametersFromServer) {
+                    $signedQuery = 'SAMLResponse='.OneLogin_Saml2_Utils::extractOriginalQueryParam('SAMLResponse');
+                    if (isset($_GET['RelayState'])) {
+                        $signedQuery .= '&RelayState='.OneLogin_Saml2_Utils::extractOriginalQueryParam('RelayState');
+                    }
+                    $signedQuery .= '&SigAlg='.OneLogin_Saml2_Utils::extractOriginalQueryParam('SigAlg');
+                } else {
+                    $signedQuery = 'SAMLResponse='.urlencode($_GET['SAMLResponse']);
+                    if (isset($_GET['RelayState'])) {
+                        $signedQuery .= '&RelayState='.urlencode($_GET['RelayState']);
+                    }
+                    $signedQuery .= '&SigAlg='.urlencode($signAlg);
                 }
-                $signedQuery .= '&SigAlg='.urlencode($signAlg);
 
                 if (!isset($idpData['x509cert']) || empty($idpData['x509cert'])) {
                     throw new Exception('In order to validate the sign on the Logout Response, the x509cert of the IdP is required');
